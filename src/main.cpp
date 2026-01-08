@@ -13,7 +13,7 @@ t^2 * (d * d) - 2t * d * (C - Q) + (C - Q)*(C - Q) - r^2 = 0
 이때 근의공식에 의해 판별식 D = b^2 - 4ac 가 0 이상이면 직선과 구체가 만난다.
 이를 이용하여 ray가 구체와 만나는지 확인하는 hit_sphere 함수를 아래와 같이 작성할 수 있다.
 */
-bool hit_sphere(const point3 &center, double radius, const ray &r)
+double hit_sphere(const point3 &center, double radius, const ray &r)
 {
   vec3 oc = center - r.origin();
   auto a = dot(r.direction(), r.direction());
@@ -35,7 +35,7 @@ color ray_color(const ray &r)
   auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
   if (t > 0.0)
   {
-    vec3 N = unit_vector(r.at(t) - point3(0, 0, -1));
+    vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
     return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
   }
   vec3 unit_direction = unit_vector(r.direction());

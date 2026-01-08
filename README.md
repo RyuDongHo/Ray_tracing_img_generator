@@ -2,6 +2,10 @@
 
 "Ray Tracing in One Weekend" 시리즈를 참조하여 구현한 레이 트레이싱 이미지 생성기입니다.
 
+## 결과물 예시
+
+![Ray Tracing Result](sample.jpg)
+
 ## 프로젝트 구조
 
 ```
@@ -14,6 +18,7 @@ raytracing_one_weekend/
 │   ├── main.cpp     # 메인 프로그램
 │   ├── vec3.cpp     # vec3 구현
 │   └── color.cpp    # 색상 처리 구현
+├── images/          # 결과물 이미지
 ├── build/           # 빌드 결과물 (git 제외)
 └── CMakeLists.txt   # CMake 빌드 설정
 ```

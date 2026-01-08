@@ -1,5 +1,4 @@
 #include "vec3.h"
-#include <cmath>
 
 // Constructors
 vec3::vec3() : e{0, 0, 0} {}

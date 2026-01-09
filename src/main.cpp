@@ -1,7 +1,7 @@
 #include <iostream>
-#include "color.h"
-#include "vec3.h"
-#include "ray.h"
+#include "utils/color.h"
+#include "utils/vec3.h"
+#include "utils/ray.h"
 
 /*
 구체의 중점 center,
@@ -29,6 +29,23 @@ double hit_sphere(const point3 &center, double radius, const ray &r)
     return (-b - std::sqrt(discriminant)) / (2.0 * a);
   }
 }
+/*
+b를 2h로 치환하면
+double hit_sphere(const point3& center, double radius, const ray& r) {
+    vec3 oc = center - r.origin();
+    auto a = r.direction().length_squared();
+    auto h = dot(r.direction(), oc);
+    auto c = oc.length_squared() - radius*radius;
+    auto discriminant = h*h - a*c;
+
+    if (discriminant < 0) {
+        return -1.0;
+    } else {
+        return (h - std::sqrt(discriminant)) / a;
+    }
+}
+이렇게 변형할 수 있습니다.
+*/
 
 color ray_color(const ray &r)
 {
@@ -67,7 +84,6 @@ int main()
   auto pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
   // Render
-
   std::cout << "P3\n"
             << image_width << " " << image_height << "\n255\n";
 

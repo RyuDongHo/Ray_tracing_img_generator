@@ -2,6 +2,10 @@
 #include "utils/color.h"
 #include "utils/vec3.h"
 #include "utils/ray.h"
+#include "utils/math.h"
+#include "hittables/hittable.h"
+#include "hittables/hittableList.h"
+#include "hittables/sphere.h"
 
 /*
 구체의 중점 center,
@@ -12,7 +16,7 @@
 t^2 * (d * d) - 2t * d * (C - Q) + (C - Q)*(C - Q) - r^2 = 0
 이때 근의공식에 의해 판별식 D = b^2 - 4ac 가 0 이상이면 직선과 구체가 만난다.
 이를 이용하여 ray가 구체와 만나는지 확인하는 hit_sphere 함수를 아래와 같이 작성할 수 있다.
-*/
+
 double hit_sphere(const point3 &center, double radius, const ray &r)
 {
   vec3 oc = center - r.origin();
@@ -29,7 +33,7 @@ double hit_sphere(const point3 &center, double radius, const ray &r)
     return (-b - std::sqrt(discriminant)) / (2.0 * a);
   }
 }
-/*
+
 b를 2h로 치환하면
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
@@ -47,13 +51,12 @@ double hit_sphere(const point3& center, double radius, const ray& r) {
 이렇게 변형할 수 있습니다.
 */
 
-color ray_color(const ray &r)
+color ray_color(const ray &r, const hittable &world)
 {
-  auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
-  if (t > 0.0)
+  hit_record rec;
+  if (world.hit(r, 0, INF, rec))
   {
-    vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
-    return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+    return 0.5 * (rec.normal + color(1, 1, 1));
   }
   vec3 unit_direction = unit_vector(r.direction());
   auto a = 0.5 * (unit_direction.y() + 1.0);
@@ -62,11 +65,17 @@ color ray_color(const ray &r)
 
 int main()
 {
-
+  // Image settings
   auto aspect_ratio = 16.0 / 9.0;
   int image_width = 400;
   int image_height = static_cast<int>(image_width / aspect_ratio);
 
+  // Objects
+  hittable_list world;
+  world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+  world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
+
+  // Camera
   auto focal_length = 1.0;
   auto viewport_height = 2.0;
   auto viewport_width =
@@ -74,12 +83,11 @@ int main()
       (static_cast<double>(image_width) / static_cast<double>(image_height));
   auto camera_center = point3(0, 0, 0);
 
+  // Viewport setup (u, v, delta_u, delta_v, upper_left, pixel00_loc)
   auto viewport_u = vec3(viewport_width, 0, 0);
   auto viewport_v = vec3(0, -viewport_height, 0);
-
   auto pixel_delta_u = viewport_u / image_width;
   auto pixel_delta_v = viewport_v / image_height;
-
   auto viewport_upper_left = camera_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
   auto pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
@@ -96,7 +104,7 @@ int main()
       auto ray_direction = pixel_center - camera_center;
       ray r(camera_center, ray_direction);
 
-      color pixel_color = ray_color(r);
+      color pixel_color = ray_color(r, world);
       write_color(std::cout, pixel_color);
     }
   }

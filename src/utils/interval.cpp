@@ -1,4 +1,7 @@
-#include "interval.h"
+#include "utils/interval.h"
+
+const interval interval::empty = interval(+INF, -INF);
+const interval interval::universe = interval(-INF, +INF);
 
 double interval::size() const {
   return max - min;

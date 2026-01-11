@@ -17,7 +17,4 @@ public:
   static const interval empty, universe;
 };
 
-const interval interval::empty = interval(+INF, -INF);
-const interval interval::universe = interval(-INF, +INF);
-
 #endif

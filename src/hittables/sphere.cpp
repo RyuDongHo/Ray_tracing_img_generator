@@ -1,7 +1,7 @@
 #include "hittables/sphere.h"
 #include "utils/vec3.h"
 
-bool sphere::hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const {
+bool sphere::hit(const ray& r, const interval& ray_t, hit_record& rec) const {
     vec3 oc = center - r.origin();
     auto a = r.direction().length_squared();
     auto h = dot(r.direction(), oc);
@@ -15,9 +15,9 @@ bool sphere::hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec
 
     // Find the nearest root that lies in the acceptable range.
     auto root = (h - sqrtd) / a;
-    if (root <= ray_tmin || ray_tmax <= root) {
+    if (!ray_t.surrounds(root)) {
         root = (h + sqrtd) / a;
-        if (root <= ray_tmin || ray_tmax <= root)
+        if (!ray_t.surrounds(root))
             return false;
     }
 

@@ -77,7 +77,10 @@ color camera::ray_color(const ray &r, int depth, const hittable &world)
   if (depth >= max_depth)
     return color(0, 0, 0);
   hit_record rec;
-  if (world.hit(r, interval(0, INF), rec))
+  // 부동 소수점 연산의 오차로 인해, 충돌 지점에서 랜덤한 방향으로 반사될 때
+  // 같은 지점에서 반복적으로 충돌 판정을 만드는 것을 방지하기 위해
+  // interval의 최소값을 0.001로 설정
+  if (world.hit(r, interval(0.001, INF), rec))
   {
     vec3 dir = random_on_hemisphere(rec.normal);
     return 0.5 * ray_color(ray(rec.p, dir), depth + 1, world);

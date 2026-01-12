@@ -115,6 +115,14 @@ vec3 random_on_hemisphere(const vec3& normal)
         return -rand_unit_vec;
 }
 
+vec3 random_in_unit_disk() {
+    while (true) {
+        auto tmp = vec3(random_double(-1,1), random_double(-1,1), 0);
+        if (tmp.length_squared() >= 1) continue;
+        return tmp;
+    }
+}
+
 vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n)*n;
 }

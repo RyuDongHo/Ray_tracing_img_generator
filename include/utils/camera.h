@@ -3,6 +3,7 @@
 
 #include "hittables/hittable.h"
 #include "utils/color.h"
+#include "utils/vec3.h"
 
 class camera
 {
@@ -11,6 +12,7 @@ public:
   int image_width = 100;
   int samples_per_pixel = 10;
   void render(const hittable &world);
+  int max_depth = 30;
 
 private:
   int image_height;   // Rendered image height
@@ -20,7 +22,7 @@ private:
   vec3 pixel_delta_v; // Offset to pixel below
   double pixel_samples_scale;
   void initialize();
-  color ray_color(const ray &r, const hittable &world);
+  color ray_color(const ray &r, int depth, const hittable &world);
   ray get_ray(int i, int j) const;
   vec3 sample_square() const;
 };

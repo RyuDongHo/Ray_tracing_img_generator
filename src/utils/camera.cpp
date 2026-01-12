@@ -37,7 +37,7 @@ void camera::render(const hittable &world)
       for (int sample = 0; sample < samples_per_pixel; ++sample)
       {
         ray r = get_ray(i, j);
-        pixel_color += ray_color(r, world);
+        pixel_color += ray_color(r, 0, world);
       }
       write_color(std::cout, pixel_samples_scale * pixel_color);
     }
@@ -72,12 +72,15 @@ void camera::initialize()
       camera_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
   pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 }
-color camera::ray_color(const ray &r, const hittable &world)
+color camera::ray_color(const ray &r, int depth, const hittable &world)
 {
+  if (depth >= max_depth)
+    return color(0, 0, 0);
   hit_record rec;
   if (world.hit(r, interval(0, INF), rec))
   {
-    return 0.5 * (rec.normal + color(1, 1, 1));
+    vec3 dir = random_on_hemisphere(rec.normal);
+    return 0.5 * ray_color(ray(rec.p, dir), depth + 1, world);
   }
   vec3 unit_direction = unit_vector(r.direction());
   auto a = 0.5 * (unit_direction.y() + 1.0);

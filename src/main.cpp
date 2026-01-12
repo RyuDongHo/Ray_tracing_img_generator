@@ -81,6 +81,7 @@ int main()
   cam.aspect_ratio = aspect_ratio;
   cam.image_width = image_width;
   cam.samples_per_pixel = 100;
+  cam.max_depth = 50;
   cam.render(world);
   
 }

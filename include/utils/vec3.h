@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "math.h"
 
 class vec3 {
   public:
@@ -25,6 +26,9 @@ class vec3 {
 
     double length() const;
     double length_squared() const;
+
+    static vec3 random();
+    static vec3 random(double min, double max); 
 };
 
 // point3 is just an alias for vec3, but useful for geometric clarity in the code.
@@ -43,5 +47,7 @@ vec3 operator/(const vec3& v, double t);
 double dot(const vec3& u, const vec3& v);
 vec3 cross(const vec3& u, const vec3& v);
 vec3 unit_vector(const vec3& v);
+vec3 random_unit_vector();
+vec3 random_on_hemisphere(const vec3& normal);
 
 #endif

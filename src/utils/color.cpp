@@ -5,9 +5,11 @@ void write_color(std::ostream& out, const color& pixel_color) {
     auto g = pixel_color.y();
     auto b = pixel_color.z();
 
+    static const interval intensity(0.000, 0.999);
+
     // Write the translated [0,255] value of each color component.
-    int rbyte = static_cast<int>(255.999 * r);
-    int gbyte = static_cast<int>(255.999 * g);
-    int bbyte = static_cast<int>(255.999 * b);
+    int rbyte = int(256 * intensity.clamp(r));
+    int gbyte = int(256 * intensity.clamp(g));
+    int bbyte = int(256 * intensity.clamp(b));
     out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
 }

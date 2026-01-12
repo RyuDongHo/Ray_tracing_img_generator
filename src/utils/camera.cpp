@@ -15,13 +15,11 @@ ray camera::get_ray(int i, int j) const
 
   return ray(ray_origin, ray_direction);
 }
-
 vec3 camera::sample_square() const
 {
   // Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
   return vec3(random_double() - 0.5, random_double() - 0.5, 0);
 }
-
 void camera::render(const hittable &world)
 {
   initialize();
@@ -83,7 +81,7 @@ color camera::ray_color(const ray &r, int depth, const hittable &world)
   if (world.hit(r, interval(0.001, INF), rec))
   {
     // uniformly sample a random direction
-    //vec3 dir = random_on_hemisphere(rec.normal);
+    // vec3 dir = random_on_hemisphere(rec.normal);
 
     // uniformly sample a random direction = lambertian diffuse
     // reflection ray와 surface normal이 이루는 각이 0일때 가장 밝고 90도일때 0이므로 cos분포를 가진다.

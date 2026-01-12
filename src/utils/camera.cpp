@@ -80,13 +80,11 @@ color camera::ray_color(const ray &r, int depth, const hittable &world)
   // interval의 최소값을 0.001로 설정
   if (world.hit(r, interval(0.001, INF), rec))
   {
-    // uniformly sample a random direction
-    // vec3 dir = random_on_hemisphere(rec.normal);
-
-    // uniformly sample a random direction = lambertian diffuse
-    // reflection ray와 surface normal이 이루는 각이 0일때 가장 밝고 90도일때 0이므로 cos분포를 가진다.
-    vec3 dir = rec.normal + random_unit_vector();
-    return 0.5 * ray_color(ray(rec.p, dir), depth + 1, world);
+    ray scattered;
+    color attenuation;
+    if (rec.mat->scatter(r, rec, attenuation, scattered))
+      return attenuation * ray_color(scattered, depth + 1, world);
+    return color(0, 0, 0);
   }
   vec3 unit_direction = unit_vector(r.direction());
   auto a = 0.5 * (unit_direction.y() + 1.0);
